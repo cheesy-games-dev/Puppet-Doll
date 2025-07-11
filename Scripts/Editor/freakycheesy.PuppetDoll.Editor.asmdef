@@ -1,0 +1,18 @@
+{
+    "name": "freakycheesy.PuppetDoll.Editor",
+    "rootNamespace": "freakycheesy.PuppetDoll.Editor",
+    "references": [
+        "GUID:ef13ddf6e6b320342b1ad0eab7ca2ed0"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
