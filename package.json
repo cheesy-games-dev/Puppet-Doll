@@ -1,6 +1,6 @@
 {
     "name": "com.freakycheesy.puppetdoll",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "displayName": "PuppetDoll",
     "description": "Open-source physics ragdoll system",
     "unity": "6000.0",
