@@ -46,7 +46,7 @@ namespace freakycheesy.PuppetDoll {
 
             torque = Vector3.ClampMagnitude(torque, pidSettings.maxStrength);
 
-            bone.physicsBone.AddTorque(torque, ForceMode.VelocityChange);
+            bone.physicsBone.AddTorque(torque, ForceMode.Force);
         }
         public static Quaternion GetRotationDelta(RagdollBone bone)
         {
