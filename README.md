@@ -1,2 +1,2 @@
 # Puppet Doll
-crappy clone of puppet master
+free/open source clone of puppet master
