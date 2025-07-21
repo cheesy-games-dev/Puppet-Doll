@@ -1,0 +1,30 @@
+{
+    "name": "com.freakycheesy.puppetdoll",
+    "version": "1.0.0",
+    "displayName": "PuppetDoll",
+    "description": "Open-source physics ragdoll system",
+    "unity": "6000.0",
+    "documentationUrl": "https://github.com/cheesy-games-dev/Puppet-Doll/wiki",
+    "dependencies": {
+        "com.unity.xr.management": "4.4.0",
+        "com.unity.render-pipelines.universal": "17.0.3",
+        "com.unity.xr.openxr": "1.12.1",
+        "com.unity.inputsystem": "1.6.3",
+        "com.unity.animation.rigging": "1.3.0"
+    },
+    "keywords": [
+        "vr",
+        "active",
+        "character",
+        "ragdoll",
+        "physics"
+    ],
+    "author": {
+        "name": "freakycheesy",
+        "url": "https://github.com/cheesy-games-dev/Puppet-Doll/issues"
+    },
+    "samples": [
+        {
+        }
+    ]
+}
