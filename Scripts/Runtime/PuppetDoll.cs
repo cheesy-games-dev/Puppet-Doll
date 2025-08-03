@@ -2,23 +2,25 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace freakycheesy.PuppetDoll {
+namespace freakycheesy.PuppetDoll
+{
     [AddComponentMenu("PuppetDoll/Puppet Doll")]
-    public class PuppetDoll : MonoBehaviour {
+    public class PuppetDoll : MonoBehaviour
+    {
         public List<RagdollBone> bones;
         public Rigidbody physicalHip;
         public Transform virtualHip;
         public bool virtuaHipFollowPhysicalHip = true;
         public bool virtuaHipRotatePhysicalHip = false;
-
+        public ForceMode forceMode = ForceMode.Force;
         public PIDSettings pidSettings = new(0.2f);
-        
-        
+
+
         // Following sparksmints ragdoll doc
         private void FixedUpdate()
         {
             if (virtuaHipFollowPhysicalHip) virtualHip.position = physicalHip.position;
-            if(virtuaHipRotatePhysicalHip) virtualHip.rotation = physicalHip.rotation;
+            if (virtuaHipRotatePhysicalHip) virtualHip.rotation = physicalHip.rotation;
             foreach (RagdollBone bone in bones)
             {
                 Torque(bone);
@@ -53,7 +55,7 @@ namespace freakycheesy.PuppetDoll {
             // Gets the difference between the physics bone rot and the virtual bone rot.
             // This is the Quaternion of getting a linear delta.
             return bone.virtualBone.rotation *
-              Quaternion.Inverse(bone.physicsBone.rotation);
+              Quaternion.Inverse(bone.physicsBone.transform.rotation);
         }
     }
 
