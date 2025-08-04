@@ -5,13 +5,19 @@ using UnityEngine;
 namespace freakycheesy.PuppetDoll {
     [AddComponentMenu("PuppetDoll/Puppet Doll")]
     public class PuppetDoll : MonoBehaviour {
+        [Header("Bones")]
         public List<RagdollBone> bones;
         public Rigidbody physicalHip;
         public Transform virtualHip;
         public bool virtuaHipFollowPhysicalHip = true;
         public bool virtuaHipRotatePhysicalHip = false;
+        [Header("PID and Physics")]
         public ForceMode forceMode = ForceMode.Force;
-        public PIDSettings pidSettings = new(0.2f);
+        public float inertiaTensorResitance = 0.2f;
+
+        public float proportionalGain = 10f;
+        public float derivativeGain = 1f;
+        public float maxStrength = 100f;
 
 
         // Following sparksmints ragdoll doc
@@ -21,59 +27,26 @@ namespace freakycheesy.PuppetDoll {
             if (virtuaHipRotatePhysicalHip)
                 virtualHip.rotation = physicalHip.rotation;
             foreach (RagdollBone bone in bones) {
-                Torque(bone);
+                bone.physicsBone.inertiaTensor = Vector3.one * inertiaTensorResitance;
+
+                Quaternion deltaRotation = bone.virtualBone.rotation *
+                  Quaternion.Inverse(bone.physicsBone.rotation);
+
+                if (deltaRotation.w < 0)
+                    deltaRotation = Quaternion.Inverse(deltaRotation);
+
+                deltaRotation.ToAngleAxis(out var angle, out var axis);
+                axis.Normalize();
+                angle *= Mathf.Deg2Rad;
+                Vector3 angularVelocityError = angle / Time.fixedDeltaTime * axis;
+
+                Vector3 torque = proportionalGain * angularVelocityError - derivativeGain *
+                  bone.physicsBone.angularVelocity;
+
+                torque = Vector3.ClampMagnitude(torque, maxStrength);
+
+                bone.physicsBone.AddTorque(torque, forceMode);
             }
-        }
-        public void Torque(RagdollBone bone) {
-            bone.physicsBone.inertiaTensor = Vector3.one * pidSettings.inertiaTensorResitance;
-            Quaternion deltaRotation = GetRotationDelta(bone);
-
-            // Basically Absolute Value equivalent for the Quaternion.
-            if (deltaRotation.w < 0)
-                deltaRotation = Quaternion.Inverse(deltaRotation);
-
-            deltaRotation.ToAngleAxis(out var angle, out var axis);
-
-            axis.Normalize();
-
-            angle *= Mathf.Deg2Rad;
-
-            Vector3 angularVelocityError = angle / Time.fixedDeltaTime * axis;
-
-            Vector3 torque = pidSettings.proportionalGain * angularVelocityError - pidSettings.derivativeGain *
-              bone.physicsBone.angularVelocity;
-
-            torque = Vector3.ClampMagnitude(torque, pidSettings.maxStrength);
-
-            bone.physicsBone.AddTorque(torque, forceMode);
-        }
-        public static Quaternion GetRotationDelta(RagdollBone bone) {
-            // Gets the difference between the physics bone rot and the virtual bone rot.
-            // This is the Quaternion of getting a linear delta.
-            return bone.virtualBone.rotation *
-              Quaternion.Inverse(bone.physicsBone.transform.rotation);
-        }
-    }
-
-    [Serializable]
-    public struct PIDSettings {
-        public float inertiaTensorResitance;
-
-        public float proportionalGain;
-        public float derivativeGain;
-        public float maxStrength;
-
-        public PIDSettings(float inertiaTensorResitance, float proportionalGain, float derivativeGain, float maxStrength) {
-            this.inertiaTensorResitance = inertiaTensorResitance;
-            this.proportionalGain = proportionalGain;
-            this.derivativeGain = derivativeGain;
-            this.maxStrength = maxStrength;
-        }
-        public PIDSettings(float inertiaTensorResitance = 0.2f) {
-            this.inertiaTensorResitance = inertiaTensorResitance;
-            this.proportionalGain = 1f;
-            this.derivativeGain = 0.1f;
-            this.maxStrength = 100f;
         }
     }
 
